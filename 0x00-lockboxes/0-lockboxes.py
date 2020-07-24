@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 """Determine if the box can be opened"""
+
+
 def canUnlockAll(boxes):
     open = {0}
     for index, box in enumerate(boxes):
