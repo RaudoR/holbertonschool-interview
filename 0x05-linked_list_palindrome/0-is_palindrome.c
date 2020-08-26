@@ -73,7 +73,7 @@ int is_palindrome(listint_t **head)
 		second_half = slow;
 		prev->next = NULL;
 		reverse_list(&second_half);
-		palindrome = compare_lists(*head, second_half);
+		palindrome = compare_l(*head, second_half);
 		reverse_list(&second_half);
 
 		if (mid)
