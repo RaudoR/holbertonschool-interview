@@ -18,22 +18,22 @@ int slide_line(int *line, size_t size, int direction)
 	}
 	else if (direction == SLIDE_RIGHT)
 	{
-		a_reverse(line, size);
+		reverse(line, size);
 		slide_zero(line, size);
 		slide_non_zero(line, size);
 		slide_zero(line, size);
-		a_reverse(line, size);
+		reverse(line, size);
 		return (1);
 	}
 	return (0);
 }
 /**
- * a_reverse - reverse array
+ * reverse - reverse array
  * @line: pointer to the array
  * @size: size of array
  * Return: void
  **/
-void a_reverse(int *line, size_t size)
+void reverse(int *line, size_t size)
 {
 	size_t a, b;
 
