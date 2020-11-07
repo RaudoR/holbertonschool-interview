@@ -1,40 +1,42 @@
 #include "binary_trees.h"
-/**
- * binary_search - recursive function that builds an AVL tree from an array
- * @array: pointer to array
- * @start: first element
- * @end: last element
- * @parent: parent node
- * Return: a pointer to the root node of the created AVL tree,
- * or NULL on failure.
- **/
-avl_t *binary_search(int *array, int start, int end, avl_t *parent)
-{
-	int middle;
-	avl_t *node;
 
-	if (start > end)
-		return (NULL);
-	middle = (start + end) / 2;
-	node = malloc(sizeof(avl_t));
-	if (!node)
-		return (NULL);
-	node->n = array[middle];
-	node->parent = parent;
-	node->left = binary_search(array, start, middle - 1, node);
-	node->right = binary_search(array, middle + 1, end, node);
-	return (node);
-}
 /**
- * sorted_array_to_avl - function that builds an AVL tree from an array
- * @array: is a pointer to the first element of the array to be converted
- * @size: is the number of element in the array
- * Return: a pointer to the root node of the created AVL tree,
- * or NULL on failure.
- **/
+ * to_avl_helper - Build an AVL tree from a sorted array
+ * @array: Pointer to the array
+ * @parent: Pointer to the parent
+ * @start: The start index
+ * @end: The end index
+ *
+ * Return: Pointer to the new AVL tree
+ */
+avl_t *to_avl_helper(int *array, avl_t *parent, int start, int end)
+{
+	int mid = (start + end) / 2;
+	avl_t *new;
+
+	if (!array || start > end)
+		return (NULL);
+
+	new = malloc(sizeof(avl_t));
+	if (!new)
+		return (NULL);
+
+	new->n = array[mid];
+	new->parent = parent;
+	new->left = to_avl_helper(array, new, start, mid - 1);
+	new->right = to_avl_helper(array, new, mid + 1, end);
+
+	return (new);
+}
+
+/**
+ * sorted_array_to_avl - Build an AVL tree from a sorted array
+ * @array: Pointer to the array
+ * @size: The size of the array
+ *
+ * Return: Pointer to the new AVL tree
+ */
 avl_t *sorted_array_to_avl(int *array, size_t size)
 {
-	if (!array)
-		return (NULL);
-	return (binary_search(array, 0, size - 1, NULL));
+	return (to_avl_helper(array, NULL, 0, size - 1));
 }
