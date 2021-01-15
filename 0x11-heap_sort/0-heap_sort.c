@@ -1,62 +1,74 @@
 #include "sort.h"
+
 /**
- * swap - swaps elements
- *
- * @i: first element
- * @j: second element
+ * _swap - swaped 2 values.
+ * @array: the array for swap him values.
+ * @i: First index
+ * @j: Second index
+ * @r_size: The size constant for print
+ * Return: Nothing
  */
-void swap(int *i, int *j)
+void _swap(int *array, int i, int j, const int r_size)
 {
-	int temp = *i;
-	*i = *j;
-	*j = temp;
-}
-/**
- * build_heap - builds heap out of array
- *
- * @array: the array
- * @i: heap size
- * @j: root index
- * @size: Number of elements of the array
- */
-void build_heap(int *array, int i, int j, size_t size)
-{
-	int max = j;
-	int left = j * 2 + 1;
-	int right = j * 2 + 2;
+	int tmp;
+	(void)r_size;
 
-	if (left < i && array[left] > array[max])
-		max = left;
-
-	if (right < i && array[right] > array[max])
-		max = right;
-
-	if (max != j)
+	if (i != j)
 	{
-		swap(&array[j], &array[max]);
-		print_array(array, size);
-		build_heap(array, i, max, size);
+		tmp = array[i];
+		array[i] = array[j];
+		array[j] = tmp;
+		print_array(array, (size_t)r_size);
 	}
 }
+
 /**
- * heap_sort - sorts an array of integers in ascending order
- * using the Heap sort algorithm
- *
- * @array: an unordered array
- * @size: Number of elements of the array
+ * _largest - Find the largest number btween the layers
+ * @array: The array for sort
+ * @size: The menor element
+ * @i: The largest.
+ * @r_size: The size for print in swap
+ * Return: Nothing.
+ */
+void _largest(int *array, size_t size, int i, const int r_size)
+{
+	int largest = i;
+	int lft = (2 * i) + 1;
+	int rgt = (2 * i) + 2;
+
+	if (lft < (int)size && array[lft] > array[largest])
+		largest = lft;
+
+	if (rgt < (int)size && array[rgt] > array[largest])
+		largest = rgt;
+
+	if (largest != i)
+	{
+		_swap(array, i, largest, r_size);
+		_largest(array, size, largest, r_size);
+	}
+}
+
+/**
+ * heap_sort - Call largest while exist layers
+ * @array: The array that generate the layers
+ * @size: Size of the array
+ * Return: Nothing
  */
 void heap_sort(int *array, size_t size)
 {
+	const int r_size = (const int)size;
 	int i;
 
+	if (size < 2 || !array)
+		return;
+
 	for (i = size / 2 - 1; i >= 0; i--)
-		build_heap(array, size, i, size);
+		_largest(array, size, i, r_size);
 
 	for (i = size - 1; i >= 0; i--)
 	{
-		swap(&array[0], &array[i]);
-		if (i != 0)
-			print_array(array, size);
-		build_heap(array, i, 0, size);
+		_swap(array, 0, i, r_size);
+		_largest(array, i, 0, r_size);
 	}
 }
