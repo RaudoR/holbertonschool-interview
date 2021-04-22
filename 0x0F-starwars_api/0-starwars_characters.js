@@ -1,36 +1,25 @@
 #!/usr/bin/node
-const argv = process.argv;
-const urlFilm = 'https://swapi-api.hbtn.io/api/films/';
-const urlMovie = `${urlFilm}${argv[2]}/`;
 
 const request = require('request');
 
-request(urlMovie, function (error, response, body) {
-  if (error == null) {
-    const fbody = JSON.parse(body);
-    const characters = fbody.characters;
-
-    if (characters && characters.length > 0) {
-      const limit = characters.length;
-      CharRequest(0, characters[0], characters, limit);
-    }
-  } else {
+const movieId = process.argv[2];
+const url = `https://swapi.dev/api/films/${movieId}/`;
+request(url, async function (error, response, body) {
+  if (error) {
     console.log(error);
+  } else {
+    const characters = JSON.parse(body).characters;
+    for (const character of characters) {
+      const res = await new Promise((resolve, reject) => {
+        request(character, (error, res, html) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(JSON.parse(html).name);
+          }
+        });
+      });
+      console.log(res);
+    }
   }
 });
-
-function CharRequest (idx, url, characters, limit) {
-  if (idx === limit) {
-    return;
-  }
-  request(url, function (error, response, body) {
-    if (!error) {
-      const rbody = JSON.parse(body);
-      console.log(rbody.name);
-      idx++;
-      CharRequest(idx, characters[idx], characters, limit);
-    } else {
-      console.error('error:', error);
-    }
-  });
-}
